@@ -17,6 +17,7 @@ import com.asish.musik.models.Songs;
 import com.asish.musik.fragments.SongPlayingFragment;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.MyViewHolder> {
     Context context;
@@ -89,4 +90,11 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.My
             contentHolder = view.findViewById(R.id.contentRow);
         }
     }
+
+    // Filter method
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+
+    }
+
 }

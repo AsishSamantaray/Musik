@@ -10,7 +10,7 @@ public class CurrentSongHelper {
     public int currentPosition=0;
 
     public boolean isPlaying =false;
-    boolean isLoop=false;
+    public boolean isLoop=false;
     public boolean isShuffle=false;
     int trackPosition =0;
 }

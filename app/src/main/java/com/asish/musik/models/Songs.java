@@ -7,10 +7,12 @@ import android.os.Parcelable;
 //public class Songs implements Parcelable {
 public class Songs implements Parcelable {
 
-    long songId, dateAdded, albumArt;
+    public long songId;
+    long dateAdded;
+    long albumArt;
     public String songTitle;
-    String artist;
-    String songData;
+    public String artist;
+    public String songData;
 
     public Songs(long songId, long dateAdded, long albumArt, String songTitle, String artist, String songData) {
         this.songId = songId;

@@ -13,9 +13,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +40,10 @@ public class MainScreenFragment extends Fragment {
     Cursor songCursor;
     Uri uri;
     ArrayList<Songs> getSongsList;
+    SearchView searchView = null;
+    private MenuItem searchMenuItem;
+
+
 
     // Get View..
     RelativeLayout nowPlayingBottomBar  = null;
@@ -97,6 +106,31 @@ public class MainScreenFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         myActivity = activity;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        myActivity.getMenuInflater().inflate(R.menu.search, menu);
+        MenuItem mSearch = menu.findItem(R.id.action_search);
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        EditText searchEditText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(getResources().getColor(R.color.white));
+        mSearchView.setQueryHint("Search");
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mainScreenAdapter.filter(newText);
+                return true;
+            }
+        });
+
+//        return super.onCreateOptionsMenu(menu, inflater);
     }
 
     // Get All songs from device..
