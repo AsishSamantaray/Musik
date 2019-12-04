@@ -12,9 +12,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +50,7 @@ public class SongPlayingFragment extends Fragment implements SensorEventListener
     TextView rightTime, leftTime;
     int currentPosition = 0;
     ImageButton fab;
+    MediaSession mSession;
 
     SeekBar seekBar;
     static ArrayList<Songs> mySongs;
@@ -186,11 +190,15 @@ public class SongPlayingFragment extends Fragment implements SensorEventListener
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mSensorMgr = (SensorManager) myActivity.getSystemService(Context.SENSOR_SERVICE);
+//        mSession = new MediaSession(myActivity, "MusicService");
+//        mSession.setCallback(new MediaSessionCallback());
+//        mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
     }
 
@@ -381,6 +389,10 @@ public class SongPlayingFragment extends Fragment implements SensorEventListener
 //                sName = mySongs.get(position).getName();
         songTitleView.setText(mySongs.get(songPosition).getSongTitle());
         songArtistView.setText(mySongs.get(songPosition).getArtist());
+        currentSongHelper.songArtist = mySongs.get(songPosition).getArtist();
+        currentSongHelper.songTitle = mySongs.get(songPosition).getSongTitle();
+        currentSongHelper.songPath = mySongs.get(songPosition).getSongData();
+//        currentSongHelper.currentPosition = mySongs.get(songPosition).getArtist();
         try{
             getAlbumArt(mySongs.get(songPosition).getSongData());
 //            Toast.makeText(myActivity, "Can't Play..", Toast.LENGTH_SHORT).show();
@@ -405,6 +417,9 @@ public class SongPlayingFragment extends Fragment implements SensorEventListener
         }
         songTitleView.setText(mySongs.get(songPosition).getSongTitle());
         songArtistView.setText(mySongs.get(songPosition).getArtist());
+        currentSongHelper.songArtist = mySongs.get(songPosition).getArtist();
+        currentSongHelper.songTitle = mySongs.get(songPosition).getSongTitle();
+        currentSongHelper.songPath = mySongs.get(songPosition).getSongData();
         startMusic();
     }
 

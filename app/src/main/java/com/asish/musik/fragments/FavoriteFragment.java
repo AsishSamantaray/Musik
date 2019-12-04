@@ -136,7 +136,7 @@ public class FavoriteFragment extends Fragment {
             refreshList = new ArrayList<Songs>();
             /*Getting the list of songs from database*/
             getListfromDatabase = favoriteContent.queryDBforList();
-            Toast.makeText(myActivity, getListfromDatabase.get(0).getSongTitle(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(myActivity, getListfromDatabase.get(0).getSongTitle(), Toast.LENGTH_LONG).show();
 
             /*Getting list of songs from phone storage*/
             ArrayList<Songs> fetchListfromDevice = getSongsFromPhone();

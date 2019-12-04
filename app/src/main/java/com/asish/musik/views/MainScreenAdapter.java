@@ -22,10 +22,13 @@ import java.util.Locale;
 public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.MyViewHolder> {
     Context context;
     ArrayList<Songs> songDetails;
+    ArrayList<Songs> songs;
 
     public MainScreenAdapter(Context context, ArrayList<Songs> songDetails) {
         this.context = context;
         this.songDetails = songDetails;
+        songs = new ArrayList<>();
+        songs.addAll(songDetails);
     }
 
     @Override
@@ -94,7 +97,18 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.My
     // Filter method
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-
+        songDetails.clear();
+        if (charText.length() == 0) {
+            songDetails.addAll(songs);
+        }
+        else {
+            for (Songs s : songs) {
+                if (s.getSongTitle().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    songDetails.add(s);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }

@@ -2,6 +2,7 @@ package com.asish.musik.fragments;
 
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,10 +11,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,8 +43,9 @@ public class MainScreenFragment extends Fragment {
     Cursor songCursor;
     Uri uri;
     ArrayList<Songs> getSongsList;
-    SearchView searchView = null;
     private MenuItem searchMenuItem;
+    private android.support.v7.widget.SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
 
 
 
@@ -90,11 +94,13 @@ public class MainScreenFragment extends Fragment {
         bottomBarSetup();
     }
 
-    //    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
-//    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -108,29 +114,39 @@ public class MainScreenFragment extends Fragment {
         myActivity = activity;
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        myActivity.getMenuInflater().inflate(R.menu.search, menu);
-        MenuItem mSearch = menu.findItem(R.id.action_search);
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
-        EditText searchEditText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setTextColor(getResources().getColor(R.color.white));
-        mSearchView.setQueryHint("Search");
+        menu.clear();
+        inflater.inflate(R.menu.search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        if (searchItem != null) {
+            searchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            searchEditText.setTextColor(getResources().getColor(R.color.white));
+            searchView.setQueryHint("Search");
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mainScreenAdapter.filter(newText);
-                return true;
-            }
-        });
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    return false;
+                }
 
-//        return super.onCreateOptionsMenu(menu, inflater);
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    mainScreenAdapter.filter(newText);
+                    return true;
+                }
+            });
+
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     // Get All songs from device..
@@ -180,7 +196,6 @@ public class MainScreenFragment extends Fragment {
         try {
             bottomBarClickHandler();
             songTitle.setText(SongPlayingFragment.currentSongHelper.songTitle);
-
 //        SongPlayingFragment.mediaPlayer.setOnCompletionListener({
 ////                songTitle.setText(SongPlayingFragment.currentSongHelper.songTitle);
 ////        SongPlayingFragment.onSongComplete();
